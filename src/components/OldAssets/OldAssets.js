@@ -1,8 +1,8 @@
-import React , { Component } from 'react';
-import {Divider, Button,Input} from 'semantic-ui-react';
+import React  from 'react';
+import {Input} from 'semantic-ui-react';
 import { Field, reduxForm,reset } from 'redux-form';
 import classes from './OldAssets.css'
-import {showingOldAssets} from '../../actions/index'
+import {oldAssetsList} from '../../actions/index'
 import OldAssetsResults from '../OldAssetsResults/OldAssetsResults'
 
 const renderField = ({input,placeholder})=> (
@@ -33,7 +33,8 @@ const OldAssets = ({handleSubmit})=> {
 
 
 const onSubmit= (value, dispatch)=> {
-    dispatch(showingOldAssets(value.data_owner))
+  console.log('about to dispatch action ', value)
+    dispatch(oldAssetsList(value.data_owner))
 }
 
 const afterSubmit = (result, dispatch)=> {

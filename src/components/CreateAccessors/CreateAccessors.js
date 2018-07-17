@@ -12,7 +12,7 @@ const renderField = ({input, placeholder}) => (
 )
 
 
-const CreateAccessors = ({handleSubmit, input,assetId}) => {
+const CreateAccessorsFake = ({handleSubmit, input,assetId}) => {
     return(
           <div>
                <form onSubmit={handleSubmit} >
@@ -39,4 +39,4 @@ export default reduxForm({
   form:'accessors',
   onSubmit,
   onSubmitSuccess:afterSubmit
-})(CreateAccessors)
+})(CreateAccessorsFake)

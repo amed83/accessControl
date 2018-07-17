@@ -10,7 +10,7 @@ import {
 import Asset from './asset'
 import * as bdb from '../bdb'
 import bip39 from 'bip39'
-import { push } from 'react-router-redux'
+
 
 export function addDataSet(dispatch){
       return{
@@ -113,16 +113,21 @@ export function acceptRequest(){
       }
 }
 
-export function showingOldAssets(assetOwner){
+export function showingOldAssets(){
         return(dispatch)=>{
            dispatch({
              type:OLD_ASSETS
            })
+      }
+}
 
-           bdb.searchAssets(assetOwner)
+export function oldAssetsList (assetOwner){
+      console.log('assetOwner ',assetOwner)
+      return(dispatch)=>{
+          bdb.searchAssets(assetOwner)
            .then(response=> dispatch({
-                 type:OLD_ASSETS_RESULTS,
-                 payload:response
-             }))
-        }
+                type:OLD_ASSETS_RESULTS,
+                payload:response
+           }))
+       }
 }

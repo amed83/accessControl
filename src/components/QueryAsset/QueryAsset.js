@@ -17,7 +17,7 @@ const renderField = ({input,placeholder})=> (
 
 
 const QueryAsset = ({handleSubmit,input,showForm}) => {
-    console.log('props in query asset ', showForm)
+
    return(
           <div className={classes.MainContainer}>
              <form onSubmit={handleSubmit}>

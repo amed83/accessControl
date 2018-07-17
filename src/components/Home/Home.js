@@ -7,7 +7,7 @@ import classes from './Home.css'
 import CreateDataSet from '../../components/CreateDataSet/CreateDataSet'
 import QueryAsset from '../../components/QueryAsset/QueryAsset'
 import {addDataSet,showingOldAssets} from '../../actions/index'
-import RequestResult from '../../components/RequestResult/RequestResult'
+
 import ReceiveRequest from '../../components/ReceiveRequest/ReceiveRequest'
 import OldAssets from '../../components/OldAssets/OldAssets'
 
@@ -23,11 +23,11 @@ class Home extends Component {
 
       render(){
         let child = this.props.addingDataSet ? <CreateDataSet /> : ""
-        let RequestResults =  this.props.showResults ? <RequestResult results={this.props.showResults} /> : ""
+
         const showAssets= this.props.oldAssets
         return(
               <div>
-                      <h1 className={classes.TitleContainer}>Demo App</h1>
+                      <h1 className={classes.TitleContainer}>Access Control Demo</h1>
                       <Divider />
 
                       <div className={classes.OuterContainer}>
@@ -51,6 +51,7 @@ class Home extends Component {
     }
 
 }
+
 
 
 const mapDispatchToProps = dispatch => ({

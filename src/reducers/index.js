@@ -62,6 +62,12 @@ function mainReducer(state=initialState,action) {
         }
    }
 
+   case SUBMIT_PROFILE : {
+       return {
+         ...state
+       }
+   }
+
 
     case QUERY_ASSET: {
         return {

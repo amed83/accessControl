@@ -23,7 +23,10 @@ const OldAssets = ({handleSubmit})=> {
                   placeholder="Insert your name"
                 />
             </form>
-            <OldAssetsResults />
+            <div className={classes.AssetsList}>
+                  <OldAssetsResults />
+            </div>
+
          </div>
     )
 }

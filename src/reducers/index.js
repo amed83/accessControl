@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
+
+import {routerReducer } from 'react-router-redux'
+
 import {ADD_DATA_SET,SET_KEYPAIR,
         CREATING_DATA_SET,SUBMIT_PROFILE,QUERY_ASSET,
         CREATING_ACCESSOR,SHOW_ACCESSOR_FORM,
         REQUEST_RESULT,ACCEPT_REQUEST,REJECT_REQUEST,OLD_ASSETS,
         OLD_ASSETS_RESULTS  } from '../actions/constants'
 
-import {routerReducer } from 'react-router-redux'
-
 const initialState= {
+
   addDataSet:false,
   showQueryResult:false,
   dataSet:[],
@@ -31,6 +33,7 @@ const initialState= {
   acceptRequestResult:null,
   showOldAssets:false,
   oldAssetQuery:[]
+
 }
 
 function mainReducer(state=initialState,action) {
@@ -40,37 +43,33 @@ function mainReducer(state=initialState,action) {
       return{
         ...state,
         addDataSet:true,
-        showQueryResult:false
+        showQueryResult:false,
+        showOldAssets:false
       }
 
-    case CREATING_DATA_SET:{
-       return{
-          ...state,
-          dataSet:[
-             ...state.dataSet,
-             action.dataSet
-          ],
-          keypair:{
-            publicKey:action.keypair.publicKey,
-            privateKey:action.keypair.privateKey
-          },
-          addDataSet:false
-       }
-    }
+      case CREATING_DATA_SET:{
+        return{
+           ...state,
+           dataSet:[
+              ...state.dataSet,
+              action.dataSet
+           ],
+           keypair:{
+             publicKey:action.keypair.publicKey,
+             privateKey:action.keypair.privateKey
+           },
+           addDataSet:false
+        }
+   }
 
-    case SUBMIT_PROFILE : {
-         return{
-           ...state
-         }
-    }
 
     case QUERY_ASSET: {
         return {
           ...state,
           queryResult:action.queryResult,
-          showQueryResult:true,
-          addDataSet:false
+          showQueryResult:true
         }
+
     }
 
     case CREATING_ACCESSOR: {
@@ -99,7 +98,8 @@ function mainReducer(state=initialState,action) {
     case REQUEST_RESULT: {
          return{
            ...state,
-           requestResults:action.response
+           requestResults:action.response,
+           addDataSet:false
          }
     }
 
@@ -121,7 +121,8 @@ function mainReducer(state=initialState,action) {
     case OLD_ASSETS: {
         return {
            ...state,
-           showOldAssets:true
+           showOldAssets:true,
+           addDataSet:false
         }
     }
 
@@ -134,6 +135,8 @@ function mainReducer(state=initialState,action) {
 
     default:
     return state;
+
+
   }
 }
 

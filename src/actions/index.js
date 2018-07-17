@@ -5,7 +5,7 @@ import {
        QUERY_ASSET,CREATING_ACCESSOR,
        SHOW_ACCESSOR_FORM,REQUEST_RESULT,
        ACCEPT_REQUEST,REJECT_REQUEST,OLD_ASSETS,
-       OLD_ASSETS_RESULTS  } from './constants'
+       OLD_ASSETS_RESULTS } from './constants'
 
 import Asset from './asset'
 import * as bdb from '../bdb'

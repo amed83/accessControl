@@ -32,7 +32,7 @@ class Home extends Component {
 
                       <div className={classes.OuterContainer}>
                             <div className={classes.LeftContainer}>
-                                      <h3 className={classes.UserTitle}>User 1</h3>
+                                      <h3 className={classes.UserTitle}>Assets Owner</h3>
                                       <div className={classes.MainContainer} >
                                             <Button primary onClick={this.handleCreate.bind(this)}>Create Asset</Button>
                                             <Button color = "green"  onClick={this.handleShow.bind(this)}>Show Assets</Button>
@@ -42,7 +42,7 @@ class Home extends Component {
                                          {child}
                             </div>
                             <div className={classes.RigthContainer}>
-                                   <h3 className={classes.UserTitle}>User 2</h3>
+                                   <h3 className={classes.UserTitle}>Recevier</h3>
                                   <QueryAsset showForm={this.props.addingDataSet} />
                             </div>
                       </div>

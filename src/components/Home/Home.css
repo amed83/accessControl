@@ -25,13 +25,13 @@
    height: 90%;
    width: 100%;
    background-color: RGB(205, 211, 209);
-   height: 450px;
+   height:800px;
 }
 
 .RigthContainer{
     position:relative;
     background-color: RGB(239, 241, 239);
-    height: 450px;
+    min-height: 450px;
     width: 100%;
 }
 

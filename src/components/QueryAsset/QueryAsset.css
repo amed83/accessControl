@@ -1,0 +1,18 @@
+.MainContainer{
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   margin-top:1em;
+
+}
+
+.InputForm{
+    padding-bottom:1em;
+}
+
+
+
+.ShowAsset{
+    padding-top: 1.5em;
+}

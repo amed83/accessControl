@@ -1,25 +1,51 @@
 import React , { Component } from 'react';
-import {Divider} from 'semantic-ui-react';
-import CreateProposal from '../../components/CreateProposal/CreateProposal';
-import ProposalListContainer from '../../containers/ProposalListContainer/ProposalListContainer';
+import {Divider, Button} from 'semantic-ui-react';
+
 import {connect } from 'react-redux';
-import DetailsContainer from '../../containers/DetailsContainer/DetailsContainer'
+
 import classes from './Home.css'
+import CreateDataSet from '../../components/CreateDataSet/CreateDataSet'
+import QueryAsset from '../../components/QueryAsset/QueryAsset'
+import {addDataSet,showingOldAssets} from '../../actions/index'
+import RequestResult from '../../components/RequestResult/RequestResult'
+import ReceiveRequest from '../../components/ReceiveRequest/ReceiveRequest'
+import OldAssets from '../../components/OldAssets/OldAssets'
 
 class Home extends Component {
-      render(){
 
-        let child =(this.props.addProposal) ? <CreateProposal />  : <ProposalListContainer />
-        if(this.props.details){
-          child = <DetailsContainer />
-        }
+      handleCreate(){
+         this.props.addDataSet()
+      }
+
+      handleShow(){
+          this.props.showingOldAssets()
+      }
+
+      render(){
+        let child = this.props.addingDataSet ? <CreateDataSet /> : ""
+        let RequestResults =  this.props.showResults ? <RequestResult results={this.props.showResults} /> : ""
+        const showAssets= this.props.oldAssets
         return(
               <div>
-                  <h1 className={classes.TitleContainer}>  Stake Machine </h1>
-                  <Divider />
-                  <div className={classes.MainContainer} >
-                      {child}
-                 </div>
+                      <h1 className={classes.TitleContainer}>Demo App</h1>
+                      <Divider />
+
+                      <div className={classes.OuterContainer}>
+                            <div className={classes.LeftContainer}>
+                                      <h3 className={classes.UserTitle}>User 1</h3>
+                                      <div className={classes.MainContainer} >
+                                            <Button primary onClick={this.handleCreate.bind(this)}>Create Asset</Button>
+                                            <Button color = "green"  onClick={this.handleShow.bind(this)}>Show Assets</Button>
+                                            {showAssets && <OldAssets /> }
+                                      </div>
+                                      <span className={classes.Request}>{this.props.receiveRequest && <ReceiveRequest/>}</span>
+                                         {child}
+                            </div>
+                            <div className={classes.RigthContainer}>
+                                   <h3 className={classes.UserTitle}>User 2</h3>
+                                  <QueryAsset showForm={this.props.addingDataSet} />
+                            </div>
+                      </div>
               </div>
          )
     }
@@ -27,11 +53,17 @@ class Home extends Component {
 }
 
 
+const mapDispatchToProps = dispatch => ({
+      addDataSet: ()=> dispatch(addDataSet()),
+      showingOldAssets:()=> dispatch(showingOldAssets())
+})
 
 const mapStateToProps = (state) => ({
-    details:state.main.showDetails,
-    addProposal:state.main.addProposal
+    addingDataSet:state.main.addDataSet,
+    showResults:state.main.requestResults,
+    receiveRequest:state.main.receiveRequest,
+    oldAssets:state.main.showOldAssets
 })
 
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

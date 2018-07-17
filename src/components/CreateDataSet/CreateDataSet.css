@@ -1,0 +1,14 @@
+
+.MainContainer{
+   display: flex;
+   justify-content: center;
+   margin-top:1em
+}
+
+.MainContainer:nth-child(2){
+  align-self:center;
+}
+
+.InputForm{
+    padding-bottom:1em;
+}

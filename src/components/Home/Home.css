@@ -2,11 +2,41 @@
     margin-top:15px;
     display: flex;
     justify-content: center;
-
 }
 
 .TitleContainer{
       display:flex;
       justify-content: center;
       position:relative;
+}
+
+.Request{
+    margin-left: 67px;
+}
+
+.OuterContainer{
+
+    display: flex;
+    justify-content: space-around;
+}
+
+.LeftContainer{
+   position:relative;
+   height: 90%;
+   width: 100%;
+   background-color: RGB(205, 211, 209);
+   height: 450px;
+}
+
+.RigthContainer{
+    position:relative;
+    background-color: RGB(239, 241, 239);
+    height: 450px;
+    width: 100%;
+}
+
+.UserTitle{
+     position:absolute;
+     left:5%;
+     top:3%;
 }

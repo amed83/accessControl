@@ -1,0 +1,15 @@
+.Container{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+}
+
+.ButtonsContainer{
+    display: flex;
+    margin-top:13px;
+}
+
+
+.Receiver {
+   font-weight: bold;
+}

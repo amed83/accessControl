@@ -1,0 +1,12 @@
+
+.ListContainer {
+  display: flex;
+  position:relative;
+  margin-left:-39px;
+}
+
+.ShowAccessor {
+    position:absolute;
+    left:40%;
+    top:57%;
+}

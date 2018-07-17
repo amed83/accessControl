@@ -1,120 +1,146 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
-import { ADD_PROPOSAL, START_PROPOSAL_ADD,REQUEST_PROPOSALS,
-        RECEIVE_PROPOSAL,SHOW_DETAILS, HIDE_DETAILS,OPEN_CHALLENGE_POPUP,
-        CREATE_CHALLENGE,OPEN_VOTE_POPUP,VOTE,CLOSE_VOTE_POPUP,
-        CLOSE_CHALLENGE_POPUP,FIND_BY_ID,SHOW_CHALLENGE_BY_ID } from '../actions/constants'
+import {ADD_DATA_SET,SET_KEYPAIR,
+        CREATING_DATA_SET,SUBMIT_PROFILE,QUERY_ASSET,
+        CREATING_ACCESSOR,SHOW_ACCESSOR_FORM,
+        REQUEST_RESULT,ACCEPT_REQUEST,REJECT_REQUEST,OLD_ASSETS,
+        OLD_ASSETS_RESULTS  } from '../actions/constants'
 
+import {routerReducer } from 'react-router-redux'
 
 const initialState= {
-  proposals:[],
-  loadingProposal:true,
-  addProposal:false,
-  showDetails:false,
-  details:{},
-  challengePopup:false,
-  votePopup:false,
-  challenges:[],
-  votes:[],
-  challengesById:[],
-  showChallengesList:false
+  addDataSet:false,
+  showQueryResult:false,
+  dataSet:[],
+  keypair:[{
+    publicKey:null,
+    privateKey:null
+  }],
+  queryResult:[],
+  accessorData:[],
+  showAccessorForm:false,
+  index:null,
+  accessorKeypair:[{
+    publicKey:null,
+    privateKey:null
+  }],
+  requestResults:null,
+  receiveRequest:false,
+  acceptRequest:false,
+  requestRejected:false,
+  acceptRequestResult:null,
+  showOldAssets:false,
+  oldAssetQuery:[]
 }
 
 function mainReducer(state=initialState,action) {
+
   switch(action.type) {
+    case ADD_DATA_SET:
+      return{
+        ...state,
+        addDataSet:true,
+        showQueryResult:false
+      }
 
-    case ADD_PROPOSAL:
-      return Object.assign({}, state, {
-         addProposal:false,
-         proposals:[
-           ...state.proposals,
-           action.proposal
-         ]
-      })
-    case START_PROPOSAL_ADD:
-      return Object.assign({}, state, {
-        addProposal:true
-      });
-    case RECEIVE_PROPOSAL:
-       return Object.assign({},state, {
-          proposals:action.proposals,
-          loadingProposal:false
-       })
-     case REQUEST_PROPOSALS:
-        return Object.assign({},state , {
-           loadingProposal:true
-        })
-    case SHOW_DETAILS:
-      return Object.assign({}, state, {
-         showDetails:true,
-         details:action.details
-      })
-    case HIDE_DETAILS:
-       return Object.assign({}, state, {
-          showDetails:false,
-          showChallengesList:false
-       })
-    case OPEN_CHALLENGE_POPUP:
-     return Object.assign({}, state, {
-        challengePopup:true
-     })
-     case CREATE_CHALLENGE:
-      return Object.assign({},state,{
-         challenges:[
-           ...state.challenges,
-         { content:action.challenge.content,
-            id:action.challenge.id,}],
-          challengePopup:false
-      })
-      case OPEN_VOTE_POPUP:
-       return Object.assign({}, state, {
-         votePopup:true
-      })
-      case VOTE:
-       return Object.assign({},state,{
-          votes:[
-            ...state.votes,
-            action.vote.result
+    case CREATING_DATA_SET:{
+       return{
+          ...state,
+          dataSet:[
+             ...state.dataSet,
+             action.dataSet
           ],
-          votePopup:false
-       })
-      case CLOSE_VOTE_POPUP:
-        return {
-          ...state,
-          votePopup:false
-        }
-      case CLOSE_CHALLENGE_POPUP:
-        return {
-          ...state,
-          challengePopup:false
-        }
-      case FIND_BY_ID:
-        let challengesById;
-        if(state.challenges){
-          const {challenges}= state
-          challengesById= challenges.filter(challenge => challenge.id ==action.id)
-        }
-        return{
-          ...state,
-          challengesById
-        }
-      case SHOW_CHALLENGE_BY_ID:
+          keypair:{
+            publicKey:action.keypair.publicKey,
+            privateKey:action.keypair.privateKey
+          },
+          addDataSet:false
+       }
+    }
 
-          return{
+    case SUBMIT_PROFILE : {
+         return{
+           ...state
+         }
+    }
+
+    case QUERY_ASSET: {
+        return {
+          ...state,
+          queryResult:action.queryResult,
+          showQueryResult:true,
+          addDataSet:false
+        }
+    }
+
+    case CREATING_ACCESSOR: {
+         return {
+           ...state,
+           accessorData:[
+              ...state.accessorData,
+              action.payload
+           ],
+           accessorKeypair:{
+             publicKey:action.keypair.publicKey,
+             privateKey:action.keypair.privateKey
+           },
+           receiveRequest:true
+         }
+    }
+
+    case SHOW_ACCESSOR_FORM: {
+         return {
+           ...state,
+           showAccessorForm:true,
+           index:action.index
+         }
+    }
+
+    case REQUEST_RESULT: {
+         return{
+           ...state,
+           requestResults:action.response
+         }
+    }
+
+    case ACCEPT_REQUEST : {
+        return {
+           ...state,
+           acceptRequest:true,
+           acceptRequestResult:action.result
+        }
+    }
+
+    case REJECT_REQUEST : {
+        return {
+          ...state,
+          requestRejected:true
+        }
+    }
+
+    case OLD_ASSETS: {
+        return {
+           ...state,
+           showOldAssets:true
+        }
+    }
+
+    case OLD_ASSETS_RESULTS: {
+         return {
             ...state,
-            showChallengesList:true
-          }
+            oldAssetQuery:action.payload
+         }
+    }
 
-        default:
-        return state;
+    default:
+    return state;
   }
-
 }
 
 const reducer = combineReducers({
       form:formReducer,
-      main:mainReducer
+      main:mainReducer,
+      router:routerReducer
 })
-
 
 export default reducer;

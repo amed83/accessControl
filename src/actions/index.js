@@ -1,141 +1,128 @@
 
 import {
-ADD_PROPOSAL,START_PROPOSAL_ADD, REQUEST_PROPOSALS,RECEIVE_PROPOSAL,
-SHOW_DETAILS,HIDE_DETAILS,OPEN_CHALLENGE_POPUP,
-CREATE_CHALLENGE,OPEN_VOTE_POPUP,VOTE,
-CLOSE_VOTE_POPUP,CLOSE_CHALLENGE_POPUP,
-FIND_BY_ID,SHOW_CHALLENGE_BY_ID} from './constants'
+       ADD_DATA_SET,CREATING_DATA_SET,
+       SET_KEYPAIR,SUBMIT_PROFILE,
+       QUERY_ASSET,CREATING_ACCESSOR,
+       SHOW_ACCESSOR_FORM,REQUEST_RESULT,
+       ACCEPT_REQUEST,REJECT_REQUEST,OLD_ASSETS,
+       OLD_ASSETS_RESULTS  } from './constants'
 
-let id = 1
+import Asset from './asset'
+import * as bdb from '../bdb'
+import bip39 from 'bip39'
+import { push } from 'react-router-redux'
 
-export function addProposal(){
-
-  return (dispatch, getState) => {
-  const form = getState().form;
-    const proposal = {
-      name:form.proposal.values.name,
-      description:form.proposal.values.description,
-      stakes:form.proposal.values.stakes,
-      id:id ++
-    }
-    dispatch({
-       type: ADD_PROPOSAL,
-       proposal
-    })
-  }
-}
-
-export function startProposalAdd() {
-    return {
-       type: START_PROPOSAL_ADD
-    }
-}
-
-export function requestProposals(){
-    return (dispatch)=>{
-       dispatch({
-          type: REQUEST_PROPOSALS
-       })
-    const exampleProposal = [{
-       "name": "This is an Example of Proposal",
-       "description": "This is a useless proposal",
-       "stakes":40,
-       "id":0
-    }]
-    dispatch(receiveProposal(exampleProposal))
-  }
-}
-
-export function receiveProposal(proposals) {
-    return {
-       type: RECEIVE_PROPOSAL,
-       proposals
-    }
-}
-
-export function showDetails(details){
-   return{
-        type:SHOW_DETAILS,
-        details
-   }
-}
-
-export function hideDetails(){
-   return{
-        type:HIDE_DETAILS
-   }
-}
-
-export function openChallengePopup(){
-  return{
-    type:OPEN_CHALLENGE_POPUP
-  }
-}
-
-export function createChallenge(getId){
-
-  return(dispatch,getState)=>{
-      const form = getState().form
-      const challenge = {
-          content:form.challenge.values.challenge,
-          id:getId
-      }
-
-      dispatch({
-        type:CREATE_CHALLENGE,
-        challenge
-      })
-  }
-}
-
-export function openVotePopup(){
+export function addDataSet(dispatch){
       return{
-        type:OPEN_VOTE_POPUP
+        type:ADD_DATA_SET
       }
 }
 
-export function vote(){
-  return(dispatch,getState)=>{
+export function creatingDataSet(){
+   return (dispatch,getState)=> {
       const form = getState().form
-      const vote = {
-          result:form.vote.values.voting
+      const dataSet ={
+        owner:form.dataset.values.data_owner,
+        description:form.dataset.values.data_description,
+        format:form.dataset.values.data_format,
+        year: form.dataset.values.data_year,
+        conditions:form.dataset.values.access_conditions
       }
+      const keypair = bdb.keypair(bip39.mnemonicToSeed(dataSet.owner))
+      dataSet.publicKey = keypair.publicKey
+      dataSet.privateKey = keypair.privateKey
+      const profileAsset = new Asset(dataSet)
+
       dispatch({
-        type:VOTE,
-        vote
+        type:CREATING_DATA_SET,
+        dataSet,
+        keypair
       })
-  }
+      dispatch(submitProfile(dataSet,profileAsset))
+   }
 }
 
-export function closeVotePopup(){
-    return {
-      type:CLOSE_VOTE_POPUP
-    }
-}
-
-export function closeChallengePopup(){
-    return {
-      type:CLOSE_CHALLENGE_POPUP
-    }
-}
-
-export function findById(id){
-       return(dispatch,getState) =>{
+export function submitProfile(dataSet,profileAsset){
+      return(dispatch,getState)=>{
+          profileAsset.create(dataSet,dispatch,getState)
           dispatch({
-            type:FIND_BY_ID,
-             id
-          })
-          const state = getState()
-          let challengesById = state.main.challengesById
-
-          dispatch(showChallengeById(challengesById))
-       }
+            type:SUBMIT_PROFILE
+         })
+      }
 }
 
-export function showChallengeById(challengesById){
+export function queryAsset(asset){
+        return(dispatch) => {
+          bdb.searchAssets(asset.search)
+            .then(queryResult=> dispatch({
+                  type:QUERY_ASSET,
+                  queryResult
+            }))
+        }
+}
+let assetIdToTransfer= "";
 
-       return{
-           type:SHOW_CHALLENGE_BY_ID,
-           challengesById
-       }
+export function creatingAccessor(accessor_name,assetId){
+    assetIdToTransfer = assetId
+    return(dispatch,getState)=>{
+         const form = getState().form
+         const accessorData= form.accessors.values.accessor_name
+         const keypair = bdb.keypair(bip39.mnemonicToSeed(accessorData))
+
+         dispatch({
+           type:CREATING_ACCESSOR,
+           payload:{
+             name:accessor_name,
+             publicKey:keypair.publicKey
+           },
+           keypair
+         })
+
+           bdb.requestAccess(keypair,assetId)
+             .then(response=> dispatch({
+                type:REQUEST_RESULT,
+                response
+             }))
+    }
+
+}
+
+export function showAccessorForm(index){
+      return{
+         type:SHOW_ACCESSOR_FORM,
+         index
+      }
+}
+
+export function rejectRequest(){
+   return {
+     type:REJECT_REQUEST
+   }
+}
+
+export function acceptRequest(){
+      return(dispatch,getState)=>{
+         const accessorPublicKey = getState().main.accessorKeypair.publicKey
+         const assetOwnerPrivateKey = getState().main.queryResult[0].data.privateKey
+         const assetOwnerPublicKey = getState().main.requestResults.outputs[0].public_keys[0]
+         const txTransferAssetSigned = getState().main.requestResults
+         bdb.ownerApproveRequest(txTransferAssetSigned,assetOwnerPrivateKey,assetOwnerPublicKey,accessorPublicKey)
+           .then(result=>  dispatch({type:ACCEPT_REQUEST, result:result}) )
+            .catch(error=> dispatch({type:ACCEPT_REQUEST, result:error}))
+
+      }
+}
+
+export function showingOldAssets(assetOwner){
+        return(dispatch)=>{
+           dispatch({
+             type:OLD_ASSETS
+           })
+
+           bdb.searchAssets(assetOwner)
+           .then(response=> dispatch({
+                 type:OLD_ASSETS_RESULTS,
+                 payload:response
+             }))
+        }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Home from './components/Home/Home';
-import './semantic/dist/semantic.min.css';
+// import './semantic/dist/semantic.min.css';
 
 
 class App extends Component {
@@ -9,7 +9,6 @@ class App extends Component {
     return (
       <div>
           <Home />
-
       </div>
     );
   }
